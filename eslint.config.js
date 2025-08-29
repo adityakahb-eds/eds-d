@@ -12,6 +12,7 @@ const thisConfig = [
       'blocks/**',
       'coverage/**',
       'dist/**',
+      'env/**',
       'gulp-tasks/**',
       'gulpfile.cjs',
       'node_modules/**',
