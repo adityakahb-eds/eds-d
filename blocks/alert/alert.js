@@ -1,0 +1,1 @@
+import{$,addClass,stringTrim}from"../../scripts/__constants.js";export default function decorate(s){addClass(s,"row m-0 w-12");const[d,a]=s.children;stringTrim($(d,"p")?.textContent).length>0?(addClass(s,"alert-has-icon"),addClass(d,"col-auto"),addClass($(d,":scope > div"),"py-3 py-md-5")):d.remove(),addClass(a,"col pr-3 pr-xl-5"),addClass($(a,":scope > div"),"py-3 py-md-5")}

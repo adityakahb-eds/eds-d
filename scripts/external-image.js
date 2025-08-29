@@ -1,0 +1,1 @@
+import{$$,getImgFileExtension}from"./__constants.js";const decorateExternalImages=e=>{$$(e,"a").forEach(e=>{if(getImgFileExtension(e.href)){const t=document.createElement("picture"),n=document.createElement("img");n.src=e.href,n.alt=e.textContent,t.append(n),e.replaceWith(t)}})};export default decorateExternalImages;
