@@ -5,7 +5,12 @@
 on:
   create:
     branches:
+      - develop
       - main
+      - qa
+      - sit
+      - stage
+      - uat
   workflow_dispatch:
 jobs:
   cleanup:
@@ -17,13 +22,13 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' || ( github.ref == 'refs/heads/main' && !(contains(github.event, 'head_commit') || github.event.head_commit.message == 'Initial commit' )) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
-      - name: Use Node.js 20
+        uses: actions/checkout@v4
+      - name: Use Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Remove Helper Files
-        run: | 
+        run: |
           rm -rf \
             .github/workflows/cleanup-on-create.yaml \
             .renovaterc.json \
@@ -38,7 +43,6 @@ jobs:
         run: |
           sed -i.bak "s/{repo}/$(basename ${{ github.repository }})/g" .github/pull_request_template.md
           sed -i.bak "s/{owner}/$(dirname ${{ github.repository }})/g" .github/pull_request_template.md
-
 
         # commit back to the repository
       - name: Commit changes
