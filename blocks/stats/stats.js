@@ -1,1 +1,55 @@
-import{$$,addClass,addVendorFilesToDOM,createElement}from"../../scripts/__constants.js";const init=t=>{let e;const a=[],n=[...t.children],d=createElement("div");addClass(d,"container"),n.forEach((t,e)=>{addClass(t,"row"),d.append(t);const a=[...t.children];a.forEach(n=>{addClass(n,"col-12 col-md-"+12/a.length),1===e&&addClass(n,"mt-3 mt-md-5"),t.append(n)})}),$$(d,"h3:first-child").length>0&&$$(d,"h3:first-child").forEach(t=>{addClass(t,"mb-0")}),e=$$(d,"em"),e.forEach(t=>{a.push({el:t,countup:new countUp.CountUp(t,parseFloat(t.textContent)),animated:!1})}),a.forEach(t=>{t.animated||new Waypoint({element:t.el,handler:function(){t.countup.start(),t.animated=!0},offset:"10%"})}),t.append(d)};export default async function decorate(t){addVendorFilesToDOM("waypoints",()=>{addVendorFilesToDOM("countup",()=>{init(t)})})}
+import { $$, addClass, addVendorFilesToDOM, createElement } from '../../scripts/__constants.js';
+const init = (block) => {
+    let countUpEls;
+    const countUpArr = [];
+    const allRows = [...block.children];
+    const containerEl = createElement('div');
+    addClass(containerEl, 'container');
+    allRows.forEach((row, index) => {
+        addClass(row, 'row');
+        containerEl.append(row);
+        const allCols = [...row.children];
+        allCols.forEach((col) => {
+            addClass(col, `col-12 col-md-${12 / allCols.length}`);
+            if (index === 1) {
+                addClass(col, 'mt-3 mt-md-5');
+            }
+            row.append(col);
+        });
+    });
+    if ($$(containerEl, 'h3:first-child').length > 0) {
+        $$(containerEl, 'h3:first-child').forEach((h3El) => {
+            addClass(h3El, 'mb-0');
+        });
+    }
+    countUpEls = $$(containerEl, 'em');
+    countUpEls.forEach((countUpEl) => {
+        countUpArr.push({
+            el: countUpEl,
+            countup: new countUp.CountUp(countUpEl, parseFloat(countUpEl.textContent)),
+            animated: false,
+        });
+    });
+    countUpArr.forEach((countupObj) => {
+        if (!countupObj.animated) {
+            new Waypoint({
+                element: countupObj.el,
+                handler: function () {
+                    countupObj.countup.start();
+                    countupObj.animated = true;
+                },
+                offset: '10%',
+            });
+        }
+    });
+    block.append(containerEl);
+};
+export default async function decorate(block) {
+    addVendorFilesToDOM('waypoints', () => {
+        addVendorFilesToDOM('countup', () => {
+            init(block);
+        });
+    });
+}
+
+//# sourceMappingURL=stats.js.map

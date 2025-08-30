@@ -1,1 +1,18 @@
-import{$$,getImgFileExtension}from"./__constants.js";const decorateExternalImages=e=>{$$(e,"a").forEach(e=>{if(getImgFileExtension(e.href)){const t=document.createElement("picture"),n=document.createElement("img");n.src=e.href,n.alt=e.textContent,t.append(n),e.replaceWith(t)}})};export default decorateExternalImages;
+import { $$, getImgFileExtension } from './__constants.js';
+const decorateExternalImages = (parentEl) => {
+    const allAnchors = $$(parentEl, 'a');
+    allAnchors.forEach((anchor) => {
+        const extn = getImgFileExtension(anchor.href);
+        if (extn) {
+            const pictureEl = document.createElement('picture');
+            const imgEl = document.createElement('img');
+            imgEl.src = anchor.href;
+            imgEl.alt = anchor.textContent;
+            pictureEl.append(imgEl);
+            anchor.replaceWith(pictureEl);
+        }
+    });
+};
+export default decorateExternalImages;
+
+//# sourceMappingURL=external-image.js.map

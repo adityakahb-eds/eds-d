@@ -1,1 +1,87 @@
-import{$,addClass,addEvent,createElement,generateUniqueId,hasClass,removeClass,wrapElements}from"../../scripts/__constants.js";const init=t=>{const e=t.closest(".tabs-section"),a=[];"true"===e.getAttribute("data-containerize")&&(addClass(t.closest(".tabs-wrapper"),"container"),wrapElements([t],{className:"col-12"}),wrapElements([t.closest(".col-12")],{className:"row"}));const s=Array.from(t.children);let n=0,r=!1;const i=createElement("div");i.setAttribute("role","tablist"),addClass(i,"tabs-toggles"),t.parentNode.insertBefore(i,t),s.forEach((t,e)=>{const[,,a]=Array.from(t.children),s="open"===($(a,"p")?.textContent||"");!r&&s&&(n=e,r=!0)}),s.forEach((t,e)=>{addClass(t,"tabs-item");const[s,r,o]=Array.from(t.children),b=generateUniqueId("tab_button_"),d=generateUniqueId("tab_item_"),c=createElement("button");c.innerHTML=s.innerHTML,addClass(c,"tabs-button"),i.appendChild(c),addClass(s,"tabs-header"),addClass(r,"tabs-body"),addClass(o,"tabs-toggle"),c.id=b,c.setAttribute("role","tab"),c.setAttribute("aria-controls",d),t.setAttribute("aria-describedby",b),t.setAttribute("role","tabpanel"),e===n?(addClass(t,"tabs-item-active"),addClass(c,"tabs-button-active"),t.setAttribute("tabindex","0"),c.setAttribute("aria-selected","true")):(t.setAttribute("tabindex","-1"),c.setAttribute("aria-selected","false"));const l={tab:c,content:t,count:e};a.push(l),addEvent(l.tab,"click",t=>{t.preventDefault(),a.forEach((t,e)=>{l.count===e?hasClass(t.tab,"tabs-button-active")||(addClass(t.tab,"tabs-button-active"),addClass(t.content,"tabs-item-active"),t.content.setAttribute("tabindex","0"),t.tab.setAttribute("aria-selected","true")):(removeClass(t.tab,"tabs-button-active"),removeClass(t.content,"tabs-item-active"),t.content.setAttribute("tabindex","-1"),t.tab.setAttribute("aria-selected","false"))})})})};export default async function decorate(t){init(t)}
+import { $, addClass, addEvent, createElement, generateUniqueId, hasClass, removeClass, wrapElements, } from '../../scripts/__constants.js';
+const init = (block) => {
+    const parent = block.closest('.tabs-section');
+    const tabArr = [];
+    if (parent.getAttribute('data-containerize') === 'true') {
+        addClass(block.closest('.tabs-wrapper'), 'container');
+        wrapElements([block], {
+            className: 'col-12',
+        });
+        wrapElements([block.closest('.col-12')], {
+            className: 'row',
+        });
+    }
+    const tabItems = Array.from(block.children);
+    let selectedTab = 0;
+    let isOpenSelected = false;
+    const tabListParent = createElement('div');
+    tabListParent.setAttribute('role', 'tablist');
+    addClass(tabListParent, 'tabs-toggles');
+    block.parentNode.insertBefore(tabListParent, block);
+    tabItems.forEach((tabItem, index) => {
+        const [, , tabToggle] = Array.from(tabItem.children);
+        const isOpen = ($(tabToggle, 'p')?.textContent || '') === 'open';
+        if (!isOpenSelected && isOpen) {
+            selectedTab = index;
+            isOpenSelected = true;
+        }
+    });
+    tabItems.forEach((tabItem, index) => {
+        addClass(tabItem, 'tabs-item');
+        const [tabHeader, tabBody, tabToggle] = Array.from(tabItem.children);
+        const uniqueId = generateUniqueId('tab_button_');
+        const uniqueItemId = generateUniqueId('tab_item_');
+        const headerBtn = createElement('button');
+        headerBtn.innerHTML = tabHeader.innerHTML;
+        addClass(headerBtn, 'tabs-button');
+        tabListParent.appendChild(headerBtn);
+        addClass(tabHeader, 'tabs-header');
+        addClass(tabBody, 'tabs-body');
+        addClass(tabToggle, 'tabs-toggle');
+        headerBtn.id = uniqueId;
+        headerBtn.setAttribute('role', 'tab');
+        headerBtn.setAttribute('aria-controls', uniqueItemId);
+        tabItem.setAttribute('aria-describedby', uniqueId);
+        tabItem.setAttribute('role', 'tabpanel');
+        if (index === selectedTab) {
+            addClass(tabItem, 'tabs-item-active');
+            addClass(headerBtn, 'tabs-button-active');
+            tabItem.setAttribute('tabindex', '0');
+            headerBtn.setAttribute('aria-selected', 'true');
+        }
+        else {
+            tabItem.setAttribute('tabindex', '-1');
+            headerBtn.setAttribute('aria-selected', 'false');
+        }
+        const obj = {
+            tab: headerBtn,
+            content: tabItem,
+            count: index,
+        };
+        tabArr.push(obj);
+        addEvent(obj.tab, 'click', (event) => {
+            event.preventDefault();
+            tabArr.forEach((tabObj, index2) => {
+                if (obj.count === index2) {
+                    if (!hasClass(tabObj.tab, 'tabs-button-active')) {
+                        addClass(tabObj.tab, 'tabs-button-active');
+                        addClass(tabObj.content, 'tabs-item-active');
+                        tabObj.content.setAttribute('tabindex', '0');
+                        tabObj.tab.setAttribute('aria-selected', 'true');
+                    }
+                }
+                else {
+                    removeClass(tabObj.tab, 'tabs-button-active');
+                    removeClass(tabObj.content, 'tabs-item-active');
+                    tabObj.content.setAttribute('tabindex', '-1');
+                    tabObj.tab.setAttribute('aria-selected', 'false');
+                }
+            });
+        });
+    });
+};
+export default async function decorate(block) {
+    init(block);
+}
+
+//# sourceMappingURL=tabs.js.map

@@ -1,1 +1,704 @@
-import{$,$$,constants}from"./__constants.js";function sampleRUM(e,t){const o=()=>window.performance?window.performance.now():Date.now()-window.hlx.rum.firstReadTime;try{if(window.hlx=window.hlx||{},!window.hlx.rum){sampleRUM.enhance=()=>{};const e=new URLSearchParams(window.location.search).get("rum"),t=("on"===e?1:"high"===window.SAMPLE_PAGEVIEWS_AT_RATE&&10)||"low"===window.SAMPLE_PAGEVIEWS_AT_RATE&&1e3||100,n=Math.random().toString(36).slice(-4),a="off"!==e&&Math.random()*t<1;if(window.hlx.rum={weight:t,id:n,isSelected:a,firstReadTime:window.performance?window.performance.timeOrigin:Date.now(),sampleRUM:sampleRUM,queue:[],collector:(...e)=>window.hlx.rum.queue.push(e)},a){const e=e=>{const t={source:"undefined error",target:""};try{t.target=e.toString(),t.source=e.stack.split("\n").filter(e=>e.match(/https?:\/\//)).shift().replace(/at ([^ ]+) \((.+)\)/,"$1@$2").replace(/ at /,"@").trim()}catch(e){console.error(e)}return t};window.addEventListener("error",({error:t})=>{sampleRUM("error",e(t))}),window.addEventListener("unhandledrejection",({reason:t})=>{let o={source:"Unhandled Rejection",target:t||"Unknown"};t instanceof Error&&(o=e(t)),sampleRUM("error",o)}),sampleRUM.baseURL=sampleRUM.baseURL||new URL(window.RUM_BASE||"/",new URL("https://rum.hlx.page")),sampleRUM.collectBaseURL=sampleRUM.collectBaseURL||sampleRUM.baseURL,sampleRUM.sendPing=(e,o,a={})=>{const c=JSON.stringify({weight:t,id:n,referer:window.location.href,checkpoint:e,t:o,...a}),i=window.RUM_PARAMS?`?${new URLSearchParams(window.RUM_PARAMS).toString()}`:"",{href:s,origin:r}=new URL(`.rum/${t}${i}`,sampleRUM.collectBaseURL),l=r===window.location.origin?new Blob([c],{type:"application/json"}):c;navigator.sendBeacon(s,l),console.debug(`ping:${e}`,a)},sampleRUM.sendPing("top",o()),sampleRUM.enhance=()=>{if($(document,'script[src*="rum-enhancer"]'))return;const{enhancerVersion:e,enhancerHash:t}=sampleRUM.enhancerContext||{},o=document.createElement("script");t&&(o.integrity=t,o.setAttribute("crossorigin","anonymous")),o.src=new URL(`.rum/@adobe/helix-rum-enhancer@${e||"^2"}/src/index.js`,sampleRUM.baseURL).href,document.head.appendChild(o)},window.hlx.RUM_MANUAL_ENHANCE||sampleRUM.enhance()}}window.hlx.rum&&window.hlx.rum.isSelected&&e&&window.hlx.rum.collector(e,t,o()),document.dispatchEvent(new CustomEvent("rum",{detail:{checkpoint:e,data:t}}))}catch(e){console.error(e)}}function setup(){window.hlx=window.hlx||{},window.hlx.RUM_MASK_URL="full",window.hlx.RUM_MANUAL_ENHANCE=!0,window.hlx.codeBasePath="",window.hlx.lighthouse="on"===new URLSearchParams(window.location.search).get("lighthouse");const e=$(document,'script[src$="/scripts/scripts.js"]');if(e)try{[window.hlx.codeBasePath]=new URL(e.src).pathname.split("/scripts/scripts.js")}catch(e){console.log(e)}}function init(){setup(),sampleRUM.collectBaseURL=window.origin,sampleRUM()}function toClassName(e){return"string"==typeof e?e.toLowerCase().replace(/[^0-9a-z]/gi,"-").replace(/-+/g,"-").replace(/^-|-$/g,""):""}function toCamelCase(e){return toClassName(e).replace(/-([a-z])/g,e=>e[1].toUpperCase())}function readBlockConfig(e){const t={};return e.querySelectorAll(":scope > div").forEach(e=>{if(e.children){const o=[...e.children];if(o[1]){const n=o[1],a=toClassName(o[0].textContent);let c="";if(n.querySelector("a")){const e=[...n.querySelectorAll("a")];c=1===e.length?e[0].href:e.map(e=>e.href)}else if(n.querySelector("img")){const e=[...n.querySelectorAll("img")];c=1===e.length?e[0].src:e.map(e=>e.src)}else if(n.querySelector("p")){const e=[...n.querySelectorAll("p")];c=1===e.length?e[0].textContent:e.map(e=>e.textContent)}else c=e.children[1].textContent;t[a]=c}}}),t}async function loadCSS(e){return new Promise((t,o)=>{if($(document,`head > link[href="${e}"]`))t("");else{const n=document.createElement("link");n.rel="stylesheet",n.href=e,n.onload=t,n.onerror=o,document.head.append(n)}})}async function loadScript(e,t){return new Promise((o,n)=>{if($(document,`head > script[src="${e}"]`))o("");else{const a=document.createElement("script");if(a.src=e,t)for(const e in t)a.setAttribute(e,t[e]);a.onload=o,a.onerror=n,document.head.append(a)}})}function getMetadata(e,t=document){const o=e&&e.includes(":")?"property":"name";return[...t.head.querySelectorAll(`meta[${o}="${e}"]`)].map(e=>e.content).join(", ")||""}function getAllMetadata(e){return[...document.head.querySelectorAll(`meta[property^="${e}:"],meta[name^="${e}-"]`)].reduce((t,o)=>(t[toClassName(o.name?o.name.substring(e.length+1):o.getAttribute("property").split(":")[1])]=o.getAttribute("content"),t),{})}function createOptimizedPicture(e,t="",o=!1,n=[{media:"(min-width: 600px)",width:"2000"},{width:"750"}]){const a=new URL(e,window.location.href),c=document.createElement("picture"),{pathname:i}=a,s=i.substring(i.lastIndexOf(".")+1);return n.forEach(e=>{const t=document.createElement("source");e.media&&t.setAttribute("media",e.media),t.setAttribute("type","image/webp"),t.setAttribute("srcset",`${i}?width=${e.width}&format=webply&optimize=medium`),c.appendChild(t)}),n.forEach((e,a)=>{if(a<n.length-1){const t=document.createElement("source");e.media&&t.setAttribute("media",e.media),t.setAttribute("srcset",`${i}?width=${e.width}&format=${s}&optimize=medium`),c.appendChild(t)}else{const n=document.createElement("img");n.setAttribute("loading",o?"eager":"lazy"),n.setAttribute("alt",t),c.appendChild(n),n.setAttribute("src",`${i}?width=${e.width}&format=${s}&optimize=medium`)}}),c}function decorateTemplateAndTheme(){const e=(e,t)=>{t.split(",").forEach(t=>{e.classList.add(toClassName(t.trim()))})},t=getMetadata("template");t&&e(document.body,t);const o=getMetadata("theme");o&&e(document.body,o)}function wrapTextNodes(e){const t=["P","PRE","UL","OL","PICTURE","TABLE","H1","H2","H3","H4","H5","H6"],o=e=>{const t=document.createElement("p");t.append(...e.childNodes),e.append(t)};e.querySelectorAll(":scope > div > div").forEach(e=>{if(e.hasChildNodes()){!!e.firstElementChild&&t.some(t=>e.firstElementChild.tagName===t)?"PICTURE"===e.firstElementChild.tagName&&(e.children.length>1||e.textContent.trim())&&o(e):o(e)}})}function decorateIcon(e){let t=Array.from(e.classList).find(e=>e.startsWith("icon-"));t=t.substring(5);const o=document.createElement("i");o.className="icon",t.startsWith("gm--")?(o.textContent=t.substring(4),o.className="icon-gm"):o.className=`icon-fa fa-fw fa-brands fa-${t.substring(4)}`,e.replaceWith(o)}function decorateIcons(e){e.querySelectorAll("span.icon").forEach(e=>{decorateIcon(e)})}function decorateSections(e){$$(e,":scope > div").forEach(e=>{const t=[];let o=!1;[...e.children].forEach(e=>{if("DIV"===e.tagName||!o){const n=document.createElement("div");t.push(n),o="DIV"!==e.tagName,o&&n.classList.add("default-content-wrapper")}t[t.length-1].append(e)}),t.forEach(t=>e.append(t)),e.classList.add("section-content"),e.dataset.sectionStatus="initialized",e.style.display="none";const n=e.querySelector("div.section-metadata");if(n){const t=readBlockConfig(n);Object.keys(t).forEach(o=>{if("style"===o){t.style.split(",").filter(e=>e).map(e=>toClassName(e.trim())).forEach(t=>e.classList.add(t))}else e.dataset[toCamelCase(o)]=t[o]}),n.parentNode.remove()}})}function buildBlock(e,t){const o=Array.isArray(t)?t:[[t]],n=document.createElement("div");return n.classList.add(e),o.forEach(e=>{const t=document.createElement("div");e.forEach(e=>{const o=document.createElement("div");(e.elems?e.elems:[e]).forEach(e=>{e&&("string"==typeof e?o.innerHTML+=e:o.appendChild(e))}),t.appendChild(o)}),n.appendChild(t)}),n}async function loadBlock(e){const t=e.dataset.blockStatus;if("loading"!==t&&"loaded"!==t){e.dataset.blockStatus="loading";const{blockName:t}=e.dataset;try{const o=loadCSS(`${window.hlx.codeBasePath}/blocks/${t}/${t}.css`),n=new Promise(o=>{(async()=>{try{const o=await import(`${window.hlx.codeBasePath}/blocks/${t}/${t}.js`);o.default&&await o.default(e)}catch(e){console.log(`failed to load module for ${t}`,e)}o("")})()});await Promise.all([o,n])}catch(e){console.log(`failed to load block ${t}`,e)}e.dataset.blockStatus="loaded"}return e}function decorateBlock(e){const t=e.classList[0];if(t){e.classList.add("block"),e.dataset.blockName=t,e.dataset.blockStatus="initialized",wrapTextNodes(e);e.parentElement.classList.add(`${t}-wrapper`);const o=e.closest(".section-content");if(e.closest("main")){const e=document.createElement("section");o.parentNode.insertBefore(e,o),e.appendChild(o)}o&&o.classList.add(`${t}-section`)}}function decorateBlocks(e){$$(e,"div.section-content > div > div").forEach(decorateBlock)}async function loadSkipToMain(){const e=buildBlock("skiptomain","");return document.body.append(e),decorateBlock(e),loadBlock(e)}async function loadHeader(e){const t=buildBlock("header","");return e.append(t),decorateBlock(t),loadBlock(t)}async function loadFooter(e){const t=buildBlock("footer","");return e.append(t),decorateBlock(t),loadBlock(t)}async function loadSection(e,t){const o=e.dataset.sectionStatus;if(!o||"initialized"===o){e.dataset.sectionStatus="loading";const o=[...e.querySelectorAll("div.block")];for(let e=0;e<o.length;e+=1)constants.ignoredBlocks.includes(o[e].getAttribute("data-block-name"))||await loadBlock(o[e]);t&&await t(e),e.dataset.sectionStatus="loaded",e.style.display=null}}async function loadSections(e){const t=[...e.querySelectorAll("div.section-content")];for(let e=0;e<t.length;e+=1)await loadSection(t[e],()=>{}),0===e&&sampleRUM.enhance&&sampleRUM.enhance()}const AUDIENCES={mobile:()=>window.innerWidth<640,tablet:()=>window.innerWidth>=640&&window.innerWidth<1280,desktop:()=>window.innerWidth>=1280},pluginContext={getAllMetadata:getAllMetadata,getMetadata:getMetadata,loadCSS:loadCSS,loadScript:loadScript,sampleRUM:sampleRUM,toCamelCase:toCamelCase,toClassName:toClassName},pluginPath="../plugins/experimentation/src/index.js";init();export{AUDIENCES,buildBlock,createOptimizedPicture,decorateBlock,decorateBlocks,decorateIcons,decorateSections,decorateTemplateAndTheme,getAllMetadata,getMetadata,loadBlock,loadCSS,loadFooter,loadHeader,loadScript,loadSection,loadSections,loadSkipToMain,pluginContext,pluginPath,readBlockConfig,sampleRUM,setup,toCamelCase,toClassName,wrapTextNodes};
+/*
+ * Copyright 2025 Adobe. All rights reserved.
+ * This file is licensed to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License. You may obtain a copy
+ * of the License at http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under
+ * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+ * OF ANY KIND, either express or implied. See the License for the specific language
+ * governing permissions and limitations under the License.
+ */
+import { $, $$, constants } from './__constants.js';
+/* eslint-env browser */
+function sampleRUM(checkpoint, data) {
+    const timeShift = () => window.performance
+        ? window.performance.now()
+        : Date.now() - window.hlx.rum.firstReadTime;
+    try {
+        window.hlx = window.hlx || {};
+        if (!window.hlx.rum) {
+            sampleRUM.enhance = () => { };
+            const param = new URLSearchParams(window.location.search).get('rum');
+            const weight = (param === 'on' && 1) ||
+                (window.SAMPLE_PAGEVIEWS_AT_RATE === 'high' && 10) ||
+                (window.SAMPLE_PAGEVIEWS_AT_RATE === 'low' && 1000) ||
+                100;
+            const id = Math.random().toString(36).slice(-4);
+            const isSelected = param !== 'off' && Math.random() * weight < 1;
+            window.hlx.rum = {
+                weight,
+                id,
+                isSelected,
+                firstReadTime: window.performance ? window.performance.timeOrigin : Date.now(),
+                sampleRUM,
+                queue: [],
+                collector: (...args) => window.hlx.rum.queue.push(args),
+            };
+            if (isSelected) {
+                const dataFromErrorObj = (error) => {
+                    const errData = { source: 'undefined error', target: '' };
+                    try {
+                        errData.target = error.toString();
+                        errData.source = error.stack
+                            .split('\n')
+                            .filter((line) => line.match(/https?:\/\//))
+                            .shift()
+                            .replace(/at ([^ ]+) \((.+)\)/, '$1@$2')
+                            .replace(/ at /, '@')
+                            .trim();
+                    }
+                    catch (err) {
+                        console.error(err);
+                        /* error structure was not as expected */
+                    }
+                    return errData;
+                };
+                window.addEventListener('error', ({ error }) => {
+                    const errData = dataFromErrorObj(error);
+                    sampleRUM('error', errData);
+                });
+                window.addEventListener('unhandledrejection', ({ reason }) => {
+                    let errData = {
+                        source: 'Unhandled Rejection',
+                        target: reason || 'Unknown',
+                    };
+                    if (reason instanceof Error) {
+                        errData = dataFromErrorObj(reason);
+                    }
+                    sampleRUM('error', errData);
+                });
+                sampleRUM.baseURL =
+                    sampleRUM.baseURL ||
+                        new URL(window.RUM_BASE || '/', new URL('https://rum.hlx.page'));
+                sampleRUM.collectBaseURL =
+                    sampleRUM.collectBaseURL || sampleRUM.baseURL;
+                sampleRUM.sendPing = (ck, time, pingData = {}) => {
+                    const rumData = JSON.stringify({
+                        weight,
+                        id,
+                        referer: window.location.href,
+                        checkpoint: ck,
+                        t: time,
+                        ...pingData,
+                    });
+                    const urlParams = window.RUM_PARAMS
+                        ? `?${new URLSearchParams(window.RUM_PARAMS).toString()}`
+                        : '';
+                    const { href: url, origin } = new URL(`.rum/${weight}${urlParams}`, sampleRUM.collectBaseURL);
+                    const body = origin === window.location.origin
+                        ? new Blob([rumData], { type: 'application/json' })
+                        : rumData;
+                    navigator.sendBeacon(url, body);
+                    console.debug(`ping:${ck}`, pingData);
+                };
+                sampleRUM.sendPing('top', timeShift());
+                sampleRUM.enhance = () => {
+                    // only enhance once
+                    if ($(document, 'script[src*="rum-enhancer"]')) {
+                        return;
+                    }
+                    const { enhancerVersion, enhancerHash } = sampleRUM.enhancerContext || {};
+                    const script = document.createElement('script');
+                    if (enhancerHash) {
+                        script.integrity = enhancerHash;
+                        script.setAttribute('crossorigin', 'anonymous');
+                    }
+                    script.src = new URL(`.rum/@adobe/helix-rum-enhancer@${enhancerVersion || '^2'}/src/index.js`, sampleRUM.baseURL).href;
+                    document.head.appendChild(script);
+                };
+                if (!window.hlx.RUM_MANUAL_ENHANCE) {
+                    sampleRUM.enhance();
+                }
+            }
+        }
+        if (window.hlx.rum && window.hlx.rum.isSelected && checkpoint) {
+            window.hlx.rum.collector(checkpoint, data, timeShift());
+        }
+        document.dispatchEvent(new CustomEvent('rum', { detail: { checkpoint, data } }));
+    }
+    catch (err) {
+        console.error(err);
+        // something went awry
+    }
+}
+/**
+ * Setup block utils.
+ */
+function setup() {
+    window.hlx = window.hlx || {};
+    window.hlx.RUM_MASK_URL = 'full';
+    window.hlx.RUM_MANUAL_ENHANCE = true;
+    window.hlx.codeBasePath = '';
+    window.hlx.lighthouse =
+        new URLSearchParams(window.location.search).get('lighthouse') === 'on';
+    const scriptEl = $(document, 'script[src$="/scripts/scripts.js"]');
+    if (scriptEl) {
+        try {
+            [window.hlx.codeBasePath] = new URL(scriptEl.src).pathname.split('/scripts/scripts.js');
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+}
+/**
+ * Auto initialization.
+ */
+function init() {
+    setup();
+    sampleRUM.collectBaseURL = window.origin;
+    sampleRUM();
+}
+/**
+ * Sanitizes a string for use as class name.
+ * @param {string} name The unsanitized string
+ * @returns {string} The class name
+ */
+function toClassName(name) {
+    return typeof name === 'string'
+        ? name
+            .toLowerCase()
+            .replace(/[^0-9a-z]/gi, '-')
+            .replace(/-+/g, '-')
+            .replace(/^-|-$/g, '')
+        : '';
+}
+/**
+ * Sanitizes a string for use as a js property name.
+ * @param {string} name The unsanitized string
+ * @returns {string} The camelCased name
+ */
+function toCamelCase(name) {
+    return toClassName(name).replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+}
+/**
+ * Extracts the config from a block.
+ * @param {Element} block The block element
+ * @returns {object} The block config
+ */
+function readBlockConfig(block) {
+    const config = {};
+    block.querySelectorAll(':scope > div').forEach((row) => {
+        if (row.children) {
+            const cols = [...row.children];
+            if (cols[1]) {
+                const col = cols[1];
+                const name = toClassName(cols[0].textContent);
+                let value = '';
+                if (col.querySelector('a')) {
+                    const as = [...col.querySelectorAll('a')];
+                    if (as.length === 1) {
+                        value = as[0].href;
+                    }
+                    else {
+                        value = as.map((a) => a.href);
+                    }
+                }
+                else if (col.querySelector('img')) {
+                    const imgs = [...col.querySelectorAll('img')];
+                    if (imgs.length === 1) {
+                        value = imgs[0].src;
+                    }
+                    else {
+                        value = imgs.map((img) => img.src);
+                    }
+                }
+                else if (col.querySelector('p')) {
+                    const ps = [...col.querySelectorAll('p')];
+                    if (ps.length === 1) {
+                        value = ps[0].textContent;
+                    }
+                    else {
+                        value = ps.map((p) => p.textContent);
+                    }
+                }
+                else {
+                    value = row.children[1].textContent;
+                }
+                config[name] = value;
+            }
+        }
+    });
+    return config;
+}
+/**
+ * Loads a CSS file.
+ * @param {string} href URL to the CSS file
+ */
+async function loadCSS(href) {
+    return new Promise((resolve, reject) => {
+        if (!$(document, `head > link[href="${href}"]`)) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = href;
+            link.onload = resolve;
+            link.onerror = reject;
+            document.head.append(link);
+        }
+        else {
+            resolve('');
+        }
+    });
+}
+/**
+ * Loads a non module JS file.
+ * @param {string} src URL to the JS file
+ * @param {Object} attrs additional optional attributes
+ */
+async function loadScript(src, attrs) {
+    return new Promise((resolve, reject) => {
+        if (!$(document, `head > script[src="${src}"]`)) {
+            const script = document.createElement('script');
+            script.src = src;
+            if (attrs) {
+                for (const attr in attrs) {
+                    script.setAttribute(attr, attrs[attr]);
+                }
+            }
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.append(script);
+        }
+        else {
+            resolve('');
+        }
+    });
+}
+/**
+ * Retrieves the content of metadata tags.
+ * @param {string} name The metadata name (or property)
+ * @param {Document} doc Document object to query for metadata. Defaults to the window's document
+ * @returns {string} The metadata value(s)
+ */
+function getMetadata(name, doc = document) {
+    const attr = name && name.includes(':') ? 'property' : 'name';
+    const meta = [...doc.head.querySelectorAll(`meta[${attr}="${name}"]`)]
+        .map((m) => m.content)
+        .join(', ');
+    return meta || '';
+}
+/**
+ * Gets all the metadata elements that are in the given scope.
+ * @param {String} scope The scope/prefix for the metadata
+ * @returns an array of HTMLElement nodes that match the given scope
+ */
+function getAllMetadata(scope) {
+    return [
+        ...document.head.querySelectorAll(`meta[property^="${scope}:"],meta[name^="${scope}-"]`),
+    ].reduce((res, meta) => {
+        const id = toClassName(meta.name
+            ? meta.name.substring(scope.length + 1)
+            : meta.getAttribute('property').split(':')[1]);
+        res[id] = meta.getAttribute('content');
+        return res;
+    }, {});
+}
+/**
+ * Returns a picture element with webp and fallbacks
+ * @param {string} src The image URL
+ * @param {string} [alt] The image alternative text
+ * @param {boolean} [eager] Set loading attribute to eager
+ * @param {Array} [breakpoints] Breakpoints and corresponding params (eg. width)
+ * @returns {Element} The picture element
+ */
+function createOptimizedPicture(src, alt = '', eager = false, breakpoints = [{ media: '(min-width: 600px)', width: '2000' }, { width: '750' }]) {
+    const url = new URL(src, window.location.href);
+    const picture = document.createElement('picture');
+    const { pathname } = url;
+    const ext = pathname.substring(pathname.lastIndexOf('.') + 1);
+    // webp
+    breakpoints.forEach((br) => {
+        const source = document.createElement('source');
+        if (br.media) {
+            source.setAttribute('media', br.media);
+        }
+        source.setAttribute('type', 'image/webp');
+        source.setAttribute('srcset', `${pathname}?width=${br.width}&format=webply&optimize=medium`);
+        picture.appendChild(source);
+    });
+    // fallback
+    breakpoints.forEach((br, i) => {
+        if (i < breakpoints.length - 1) {
+            const source = document.createElement('source');
+            if (br.media) {
+                source.setAttribute('media', br.media);
+            }
+            source.setAttribute('srcset', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
+            picture.appendChild(source);
+        }
+        else {
+            const img = document.createElement('img');
+            img.setAttribute('loading', eager ? 'eager' : 'lazy');
+            img.setAttribute('alt', alt);
+            picture.appendChild(img);
+            img.setAttribute('src', `${pathname}?width=${br.width}&format=${ext}&optimize=medium`);
+        }
+    });
+    return picture;
+}
+/**
+ * Set template (page structure) and theme (page styles).
+ */
+function decorateTemplateAndTheme() {
+    const addClasses = (element, classes) => {
+        classes.split(',').forEach((c) => {
+            element.classList.add(toClassName(c.trim()));
+        });
+    };
+    const template = getMetadata('template');
+    if (template) {
+        addClasses(document.body, template);
+    }
+    const theme = getMetadata('theme');
+    if (theme) {
+        addClasses(document.body, theme);
+    }
+}
+/**
+ * Wrap inline text content of block cells within a <p> tag.
+ * @param {Element} block the block element
+ */
+function wrapTextNodes(block) {
+    const validWrappers = [
+        'P',
+        'PRE',
+        'UL',
+        'OL',
+        'PICTURE',
+        'TABLE',
+        'H1',
+        'H2',
+        'H3',
+        'H4',
+        'H5',
+        'H6',
+    ];
+    const wrap = (el) => {
+        const wrapper = document.createElement('p');
+        wrapper.append(...el.childNodes);
+        el.append(wrapper);
+    };
+    block.querySelectorAll(':scope > div > div').forEach((blockColumn) => {
+        if (blockColumn.hasChildNodes()) {
+            const hasWrapper = !!blockColumn.firstElementChild &&
+                validWrappers.some((tagName) => blockColumn.firstElementChild.tagName === tagName);
+            if (!hasWrapper) {
+                wrap(blockColumn);
+            }
+            else if (blockColumn.firstElementChild.tagName === 'PICTURE' &&
+                (blockColumn.children.length > 1 || !!blockColumn.textContent.trim())) {
+                wrap(blockColumn);
+            }
+        }
+    });
+}
+/**
+ * Decorates paragraphs containing a single link as buttons.
+ * @param {Element} element container element
+ */
+// function decorateButtons(element) {
+//   console.log('========element', element);
+//   element.querySelectorAll('a').forEach((a) => {
+//     a.title = a.title || a.textContent;
+//     if (a.href !== a.textContent) {
+//       const up = a.parentElement;
+//       const twoup = a.parentElement.parentElement;
+//       if (!a.querySelector('img')) {
+//         if (up.childNodes.length === 1 && (up.tagName === 'P' || up.tagName === 'DIV')) {
+//           a.className = 'button'; // default
+//           up.classList.add('button-container');
+//         }
+//         if (
+//           up.childNodes.length === 1
+//           && up.tagName === 'STRONG'
+//           && twoup.childNodes.length === 1
+//           && twoup.tagName === 'P'
+//         ) {
+//           a.className = 'button primary';
+//           twoup.classList.add('button-container');
+//         }
+//         if (
+//           up.childNodes.length === 1
+//           && up.tagName === 'EM'
+//           && twoup.childNodes.length === 1
+//           && twoup.tagName === 'P'
+//         ) {
+//           a.className = 'button secondary';
+//           twoup.classList.add('button-container');
+//         }
+//       }
+//     }
+//   });
+// }
+/**
+ * Add <img> for icon, prefixed with codeBasePath and optional prefix.
+ * @param {Element} [span] span element with icon classes
+ * @param {string} [prefix] prefix to be added to icon src
+ * @param {string} [alt] alt text to be added to icon
+ */
+function decorateIcon(span) {
+    let iconName = Array.from(span.classList).find((c) => c.startsWith('icon-'));
+    iconName = iconName.substring(5);
+    const iEl = document.createElement('i');
+    iEl.className = 'icon';
+    if (iconName.startsWith('gm--')) {
+        iEl.textContent = iconName.substring(4);
+        iEl.className = 'icon-gm';
+    }
+    else {
+        iEl.className = `icon-fa fa-fw fa-brands fa-${iconName.substring(4)}`;
+    }
+    span.replaceWith(iEl);
+}
+/**
+ * Add <img> for icons, prefixed with codeBasePath and optional prefix.
+ * @param {Element} [element] Element containing icons
+ * @param {string} [prefix] prefix to be added to icon the src
+ */
+function decorateIcons(element) {
+    const icons = element.querySelectorAll('span.icon');
+    icons.forEach((span) => {
+        decorateIcon(span);
+    });
+}
+/**
+ * Decorates all sections in a container element.
+ * @param {Element} main The container element
+ */
+function decorateSections(main) {
+    $$(main, ':scope > div').forEach((section) => {
+        const wrappers = [];
+        let defaultContent = false;
+        [...section.children].forEach((e) => {
+            if (e.tagName === 'DIV' || !defaultContent) {
+                const wrapper = document.createElement('div');
+                wrappers.push(wrapper);
+                defaultContent = e.tagName !== 'DIV';
+                if (defaultContent) {
+                    wrapper.classList.add('default-content-wrapper');
+                }
+            }
+            wrappers[wrappers.length - 1].append(e);
+        });
+        wrappers.forEach((wrapper) => section.append(wrapper));
+        section.classList.add('section-content');
+        section.dataset.sectionStatus = 'initialized';
+        section.style.display = 'none';
+        // Process section metadata
+        const sectionMeta = section.querySelector('div.section-metadata');
+        if (sectionMeta) {
+            const meta = readBlockConfig(sectionMeta);
+            Object.keys(meta).forEach((key) => {
+                if (key === 'style') {
+                    const styles = meta.style
+                        .split(',')
+                        .filter((style) => style)
+                        .map((style) => toClassName(style.trim()));
+                    styles.forEach((style) => section.classList.add(style));
+                }
+                else {
+                    section.dataset[toCamelCase(key)] = meta[key];
+                }
+            });
+            sectionMeta.parentNode.remove();
+        }
+    });
+}
+/**
+ * Builds a block DOM Element from a two dimensional array, string, or object
+ * @param {string} blockName name of the block
+ * @param {*} content two dimensional array or string or object of content
+ */
+function buildBlock(blockName, content) {
+    const table = Array.isArray(content) ? content : [[content]];
+    const blockEl = document.createElement('div');
+    // build image block nested div structure
+    blockEl.classList.add(blockName);
+    table.forEach((row) => {
+        const rowEl = document.createElement('div');
+        row.forEach((col) => {
+            const colEl = document.createElement('div');
+            const vals = col.elems ? col.elems : [col];
+            vals.forEach((val) => {
+                if (val) {
+                    if (typeof val === 'string') {
+                        colEl.innerHTML += val;
+                    }
+                    else {
+                        colEl.appendChild(val);
+                    }
+                }
+            });
+            rowEl.appendChild(colEl);
+        });
+        blockEl.appendChild(rowEl);
+    });
+    return blockEl;
+}
+/**
+ * Loads JS and CSS for a block.
+ * @param {Element} block The block element
+ */
+async function loadBlock(block) {
+    const status = block.dataset.blockStatus;
+    if (status !== 'loading' && status !== 'loaded') {
+        block.dataset.blockStatus = 'loading';
+        const { blockName } = block.dataset;
+        try {
+            const cssLoaded = loadCSS(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.css`);
+            const decorationComplete = new Promise((resolve) => {
+                (async () => {
+                    try {
+                        const mod = await import(`${window.hlx.codeBasePath}/blocks/${blockName}/${blockName}.js`);
+                        if (mod.default) {
+                            await mod.default(block);
+                        }
+                    }
+                    catch (error) {
+                        console.log(`failed to load module for ${blockName}`, error);
+                    }
+                    resolve('');
+                })();
+            });
+            await Promise.all([cssLoaded, decorationComplete]);
+        }
+        catch (error) {
+            console.log(`failed to load block ${blockName}`, error);
+        }
+        block.dataset.blockStatus = 'loaded';
+    }
+    return block;
+}
+/**
+ * Decorates a block.
+ * @param {Element} block The block element
+ */
+function decorateBlock(block) {
+    const shortBlockName = block.classList[0];
+    if (shortBlockName) {
+        block.classList.add('block');
+        block.dataset.blockName = shortBlockName;
+        block.dataset.blockStatus = 'initialized';
+        wrapTextNodes(block);
+        const blockWrapper = block.parentElement;
+        blockWrapper.classList.add(`${shortBlockName}-wrapper`);
+        const section = block.closest('.section-content');
+        if (block.closest('main')) {
+            const sectionEl = document.createElement('section');
+            section.parentNode.insertBefore(sectionEl, section);
+            sectionEl.appendChild(section);
+        }
+        if (section) {
+            section.classList.add(`${shortBlockName}-section`);
+            // blockWrapper.classList.add('container');
+        }
+    }
+}
+/**
+ * Decorates all blocks in a container element.
+ * @param {Element} main The container element
+ */
+function decorateBlocks(main) {
+    $$(main, 'div.section-content > div > div').forEach(decorateBlock);
+}
+async function loadSkipToMain() {
+    const block = buildBlock('skiptomain', '');
+    document.body.append(block);
+    decorateBlock(block);
+    return loadBlock(block);
+}
+/**
+ * Loads a block named 'header' into header
+ * @param {Element} header header element
+ * @returns {Promise}
+ */
+async function loadHeader(header) {
+    const headerBlock = buildBlock('header', '');
+    header.append(headerBlock);
+    decorateBlock(headerBlock);
+    return loadBlock(headerBlock);
+}
+/**
+ * Loads a block named 'footer' into footer
+ * @param footer footer element
+ * @returns {Promise}
+ */
+async function loadFooter(footer) {
+    const footerBlock = buildBlock('footer', '');
+    footer.append(footerBlock);
+    decorateBlock(footerBlock);
+    return loadBlock(footerBlock);
+}
+/**
+ * Wait for Image.
+ * @param {Element} section section element
+ */
+// async function waitForFirstImage(section) {
+//   const lcpCandidate = section.querySelector('img');
+//   await new Promise((resolve) => {
+//     if (lcpCandidate && !lcpCandidate.complete) {
+//       lcpCandidate.setAttribute('loading', 'eager');
+//       lcpCandidate.addEventListener('load', resolve);
+//       lcpCandidate.addEventListener('error', resolve);
+//     } else {
+//       resolve();
+//     }
+//   });
+// }
+/**
+ * Loads all blocks in a section.
+ * @param {Element} section The section element
+ */
+async function loadSection(section, loadCallback) {
+    const status = section.dataset.sectionStatus;
+    if (!status || status === 'initialized') {
+        section.dataset.sectionStatus = 'loading';
+        const blocks = [...section.querySelectorAll('div.block')];
+        for (let i = 0; i < blocks.length; i += 1) {
+            if (!constants.ignoredBlocks.includes(blocks[i].getAttribute('data-block-name'))) {
+                await loadBlock(blocks[i]);
+            }
+        }
+        if (loadCallback) {
+            await loadCallback(section);
+        }
+        section.dataset.sectionStatus = 'loaded';
+        section.style.display = null;
+    }
+}
+/**
+ * Loads all sections.
+ * @param {Element} element The parent element of sections to load
+ */
+async function loadSections(element) {
+    const sections = [...element.querySelectorAll('div.section-content')];
+    for (let i = 0; i < sections.length; i += 1) {
+        await loadSection(sections[i], () => { });
+        if (i === 0 && sampleRUM.enhance) {
+            sampleRUM.enhance();
+        }
+    }
+}
+const AUDIENCES = {
+    mobile: () => window.innerWidth < 640,
+    tablet: () => window.innerWidth >= 640 && window.innerWidth < 1280,
+    desktop: () => window.innerWidth >= 1280,
+};
+// Define an execution context
+const pluginContext = {
+    getAllMetadata,
+    getMetadata,
+    loadCSS,
+    loadScript,
+    sampleRUM,
+    toCamelCase,
+    toClassName,
+};
+const pluginPath = '../plugins/experimentation/src/index.js';
+init();
+export { 
+// waitForFirstImage,
+AUDIENCES, buildBlock, createOptimizedPicture, decorateBlock, decorateBlocks, decorateIcons, decorateSections, decorateTemplateAndTheme, getAllMetadata, getMetadata, loadBlock, loadCSS, loadFooter, loadHeader, loadScript, loadSection, loadSections, loadSkipToMain, pluginContext, pluginPath, readBlockConfig, sampleRUM, setup, toCamelCase, toClassName, wrapTextNodes, };
+
+//# sourceMappingURL=aem.js.map
