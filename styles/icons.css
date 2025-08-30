@@ -1,1 +1,83 @@
-﻿@font-face{font-family:"fa-brands";font-style:normal;font-weight:400;font-display:block;src:url("../fonts/fa-brands-400.woff2") format("woff2")}@font-face{font-family:"fa-brands";font-style:normal;font-weight:400;font-display:block;src:url("../fonts/fa-regular-400.woff2") format("woff2")}.fa-fw{--fa-width: 1.25em}.icon-gm,.icon-fa{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;direction:ltr;display:inline-flex;font-size:inherit;font-style:normal;font-weight:normal;letter-spacing:normal;line-height:inherit;text-rendering:optimizeLegibility;text-transform:none;white-space:nowrap;word-wrap:normal}.icon-gm{font-family:"Material Symbols Outlined";font-feature-settings:"liga";font-variation-settings:"FILL" 0,"wght" 400,"GRAD" 0,"opsz" 48}.icon-fa{align-items:center;font-family:"fa-brands";font-weight:400;height:var(--fa-width, 1.25em);justify-content:center;width:var(--fa-width, 1.25em)}.icon-fa::before{content:var(--fa);line-height:1}.fa-facebook-f{--fa: ""}.fa-x-twitter{--fa: ""}.fa-linkedin-in{--fa: ""}.fa-youtube{--fa: ""}.fa-instagram{--fa: ""}.fa-pinterest-p{--fa: ""}.fa-whatsapp{--fa: ""}
+@charset "UTF-8";
+@font-face {
+  font-family: "fa-brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../fonts/fa-brands-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "fa-brands";
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("../fonts/fa-regular-400.woff2") format("woff2");
+}
+.fa-fw {
+  --fa-width: 1.25em;
+}
+
+.icon-gm,
+.icon-fa {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  direction: ltr;
+  display: inline-flex;
+  font-size: inherit;
+  font-style: normal;
+  font-weight: normal;
+  letter-spacing: normal;
+  line-height: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+}
+
+.icon-gm {
+  font-family: "Material Symbols Outlined";
+  font-feature-settings: "liga";
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 48;
+}
+
+.icon-fa {
+  align-items: center;
+  font-family: "fa-brands";
+  font-weight: 400;
+  height: var(--fa-width, 1.25em);
+  justify-content: center;
+  width: var(--fa-width, 1.25em);
+}
+.icon-fa::before {
+  content: var(--fa);
+  line-height: 1;
+}
+
+.fa-facebook-f {
+  --fa: "";
+}
+
+.fa-x-twitter {
+  --fa: "";
+}
+
+.fa-linkedin-in {
+  --fa: "";
+}
+
+.fa-youtube {
+  --fa: "";
+}
+
+.fa-instagram {
+  --fa: "";
+}
+
+.fa-pinterest-p {
+  --fa: "";
+}
+
+.fa-whatsapp {
+  --fa: "";
+}
+/*# sourceMappingURL=icons.css.map */

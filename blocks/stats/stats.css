@@ -1,1 +1,41 @@
-.stats-wrapper{text-align:center}.stats h3{font-family:"Noto Sans",sans-serif;font-optical-sizing:auto;font-weight:400}.stats h3 em{font-family:"Noto Serif",serif;font-optical-sizing:auto;font-weight:300;font-size:clamp(2rem,2vw + 1.21rem,3rem);font-style:normal}@media(min-width: 47.5em){.stats h3 em{font-family:"Noto Serif",serif;font-optical-sizing:auto;font-weight:300;font-size:clamp(1.625rem,1.25vw + 1.13125rem,2.25rem)}}@media(min-width: 79.5em){.stats h3 em{font-family:"Noto Serif",serif;font-optical-sizing:auto;font-weight:300;font-size:clamp(1.75rem,1.5vw + 1.1575rem,2.5rem)}}@media(min-width: 89.5em){.stats h3 em{font-family:"Noto Serif",serif;font-optical-sizing:auto;font-weight:300;font-size:clamp(2rem,2vw + 1.21rem,3rem)}}
+.stats-wrapper {
+  text-align: center;
+}
+.stats h3 {
+  font-family: "Noto Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+}
+.stats h3 em {
+  font-family: "Noto Serif", serif;
+  font-optical-sizing: auto;
+  font-weight: 300;
+  font-size: clamp(2rem, 2vw + 1.21rem, 3rem);
+  font-style: normal;
+}
+
+@media (min-width: 47.5em) {
+  .stats h3 em {
+    font-family: "Noto Serif", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-size: clamp(1.625rem, 1.25vw + 1.13125rem, 2.25rem);
+  }
+}
+@media (min-width: 79.5em) {
+  .stats h3 em {
+    font-family: "Noto Serif", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-size: clamp(1.75rem, 1.5vw + 1.1575rem, 2.5rem);
+  }
+}
+@media (min-width: 89.5em) {
+  .stats h3 em {
+    font-family: "Noto Serif", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-size: clamp(2rem, 2vw + 1.21rem, 3rem);
+  }
+}
+/*# sourceMappingURL=stats.css.map */

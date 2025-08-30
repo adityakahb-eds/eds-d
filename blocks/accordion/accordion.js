@@ -1,1 +1,60 @@
-import{$,addClass,addEvent,createElement,generateUniqueId,hasClass,removeClass,slideDown,slideUp,wrapElements}from"../../scripts/__constants.js";const init=e=>{"true"===e.closest(".accordion-section").getAttribute("data-containerize")&&(addClass(e.closest(".accordion-wrapper"),"container"),wrapElements([e],{className:"col-12"}),wrapElements([e.closest(".col-12")],{className:"row"}));Array.from(e.children).forEach(e=>{addClass(e,"accordion-item");const[a,t,s]=Array.from(e.children),o=generateUniqueId("accordion_item_"),c=$(a,"h2, h3, h4, h5, h6"),i=createElement("button"),n="open"===($(s,"p")?.textContent||"");addClass(t,"accordion-collapse"),addClass(s,"accordion-toggle"),t.setAttribute("id",o),s.setAttribute("aria-hidden","true"),i.setAttribute("type","button"),i.innerHTML=`${c.innerHTML}<span class="icon-gm accordion-icon-open">add</span>\n      <span class="icon-gm accordion-icon-close">remove</span>`,addClass(i,"accordion-button"),i.setAttribute("aria-expanded","false"),i.setAttribute("aria-controls",o),n&&(i.setAttribute("aria-expanded","true"),addClass(t,"accordion-collapse-active"),addClass(e,"accordion-item-active"),t.style.display="block"),addEvent(i,"click",()=>{hasClass(t,"accordion-collapse-active")?(slideUp(t),i.setAttribute("aria-expanded","false"),removeClass(t,"accordion-collapse-active"),removeClass(e,"accordion-item-active")):(slideDown(t),i.setAttribute("aria-expanded","true"),addClass(t,"accordion-collapse-active"),addClass(e,"accordion-item-active"))}),c.innerHTML="",c.appendChild(i),addClass(c,"accordion-header")})};export default async function decorate(e){init(e)}
+import { $, addClass, addEvent, createElement, generateUniqueId, hasClass, removeClass, slideDown, slideUp, wrapElements, } from '../../scripts/__constants.js';
+const init = (block) => {
+    const parent = block.closest('.accordion-section');
+    if (parent.getAttribute('data-containerize') === 'true') {
+        addClass(block.closest('.accordion-wrapper'), 'container');
+        wrapElements([block], {
+            className: 'col-12',
+        });
+        wrapElements([block.closest('.col-12')], {
+            className: 'row',
+        });
+    }
+    const accordionItems = Array.from(block.children);
+    accordionItems.forEach((accordionItem) => {
+        addClass(accordionItem, 'accordion-item');
+        const [accordionHeader, accordionBody, accordionToggle] = Array.from(accordionItem.children);
+        const uniqueId = generateUniqueId('accordion_item_');
+        const headerElement = $(accordionHeader, 'h2, h3, h4, h5, h6');
+        const headerBtn = createElement('button');
+        const isOpen = ($(accordionToggle, 'p')?.textContent || '') === 'open';
+        addClass(accordionBody, 'accordion-collapse');
+        addClass(accordionToggle, 'accordion-toggle');
+        accordionBody.setAttribute('id', uniqueId);
+        accordionToggle.setAttribute('aria-hidden', 'true');
+        headerBtn.setAttribute('type', 'button');
+        headerBtn.innerHTML = `${headerElement.innerHTML}<span class="icon-gm accordion-icon-open">add</span>
+      <span class="icon-gm accordion-icon-close">remove</span>`;
+        addClass(headerBtn, 'accordion-button');
+        headerBtn.setAttribute('aria-expanded', 'false');
+        headerBtn.setAttribute('aria-controls', uniqueId);
+        if (isOpen) {
+            headerBtn.setAttribute('aria-expanded', 'true');
+            addClass(accordionBody, 'accordion-collapse-active');
+            addClass(accordionItem, 'accordion-item-active');
+            accordionBody.style.display = 'block';
+        }
+        addEvent(headerBtn, 'click', () => {
+            if (hasClass(accordionBody, 'accordion-collapse-active')) {
+                slideUp(accordionBody);
+                headerBtn.setAttribute('aria-expanded', 'false');
+                removeClass(accordionBody, 'accordion-collapse-active');
+                removeClass(accordionItem, 'accordion-item-active');
+            }
+            else {
+                slideDown(accordionBody);
+                headerBtn.setAttribute('aria-expanded', 'true');
+                addClass(accordionBody, 'accordion-collapse-active');
+                addClass(accordionItem, 'accordion-item-active');
+            }
+        });
+        headerElement.innerHTML = '';
+        headerElement.appendChild(headerBtn);
+        addClass(headerElement, 'accordion-header');
+    });
+};
+export default async function decorate(block) {
+    init(block);
+}
+
+//# sourceMappingURL=accordion.js.map
