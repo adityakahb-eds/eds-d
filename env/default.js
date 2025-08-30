@@ -1,1 +1,1 @@
-const config={key:"main",name:"MAIN",domain:["localhost"],rum:"https://rum.hlx.page/.rum/@adobe/helix-rum-js@^2/dist/rum-standalone.js",cookieUsage:!0,tempurl:"https://www.aem.live"};export default config;
+const config={key:"stage",name:"STAGE",domain:["localhost"],rum:"https://rum.hlx.page/.rum/@adobe/helix-rum-js@^2/dist/rum-standalone.js",cookieUsage:!0,tempurl:"https://www.github.com"};export default config;
